@@ -9,7 +9,9 @@ use ieee.numeric_std.all;
 	-- OR
 	--HZ/baud
 		-- 50,000,000/38400 ~ 1302
-	g_clks_per_bit : integer := 1302
+		--CORRECTION--Xilinx FPGA Runs at 100,000,000
+		--100,000,000/38400 ~ 2604
+	g_clks_per_bit : integer := 2604
 );
   port (
     i_clk 			: in std_logic;
