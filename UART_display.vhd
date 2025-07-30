@@ -1,3 +1,12 @@
+-- UART_display.vhd
+--
+-- 4byte UART TOP LEVEL FILE
+--
+-- Phillip Petty
+-- 
+-- 7/30/2025
+
+
 library ieee;
 use ieee.std_logic_1164.ALL;
 use ieee.numeric_std.all;
@@ -41,6 +50,7 @@ architecture RTL of Uart_disp is
 	signal rx_uart_syncd		: std_logic;
 	signal rx_dv				: std_logic;
 	signal resetinvert			: std_logic;
+	signal byteprnt_sig			: std_logic_vector(7 downto 0);
 --	signal copy_rx_dv			: std_logic;
 	
 component	dualRankSync is generic ( resetVal    			: std_logic := '0');
@@ -84,7 +94,46 @@ component rx_uart_sample is
 			
 			);
 end component;
+
+component four_byte_data is
+
+
+	port (
+		--inputs
+		clk				: in std_logic;
+		rx_dv			: in std_logic;
+		syncd_byte		: in std_logic_vector(7 downto 0);
+		syncRst			: in std_logic;
+		--outputs
+		AN0				: out std_logic;
+		AN1				: out std_logic;
+		AN2				: out std_logic;
+		AN3				: out std_logic;
+		num_disp		: out std_logic_vector(7 downto 0)
+		--byteprnt		: out std_logic_vector(7 downto 0)
+		);
+end component;
 begin
+
+four_byte_data_i	: four_byte_data
+
+
+	port map (
+		--inputs
+		clk				=>	i_clk,
+		rx_dv			=>	rx_dv,
+		syncd_byte		=>	syncd_byte,
+		syncRst			=>	syncRst,
+		--outputs
+		AN0				=> 	AN0,
+		AN1				=> 	AN1,
+		AN2				=> 	AN2,
+		AN3				=> 	AN3,
+		num_disp		=> 	num_disp
+		--byteprnt		=>	byteprnt_sig
+		);
+		
+
 -- new reset/rstinvert
 -- set asyncRst to resetinvert
 resetinvert     <= not rst;
@@ -108,7 +157,7 @@ rx_uart_sample_i   : rx_uart_sample
 
 			i_clk				=> i_clk,
 
-			i_rst				=> rst,
+			i_rst				=> syncRst,
 			
 			i_data_serial		=> rx_uart_syncd,
 
@@ -128,50 +177,35 @@ dualRankSync_uartRx   : dualRankSync        generic map (
             inData      => rx_uart_async,
             outData     => rx_uart_syncd );
 			
-			
-	p_uart_disp : process(i_clk)
-	begin
-		if rising_edge (i_clk) then
+	--COMMENTED OUT BLOCK IS FOR SINGLE BYTE OVER UART OPERATIONS
+	--
+	--p_uart_disp : process(i_clk)
+	--begin
+	--	if rising_edge (i_clk) then
 	--	copy_rx_dv	<= rx_dv;
-			if syncRst = '1' then
-				AN0				<= '1';
-				AN1				<= '1';
-				AN2				<= '1';
-				AN3				<= '1';
-				num_disp		<= "11111111";
-				--rx_dv			<= '0';
-				
-			else
-				--rx_dv	<= o_rx_dv;
-				--rx_dv			<= '1';
-
-				--	case r_state_disp is
-					
-					--	when dv0	=>
-					--		if 	rx_dv = '0' then
-					--			AN0				<= '1';
-					--			AN1				<= '1';
-					--			AN2				<= '1';
-					--			AN3				<= '1';
-					--			num_disp		<= "11111111";
-					--			r_state_disp 	<= dv0;
-					--		else
-					--			r_state_disp	<= dv1;
-					--		end if;
-					--	when dv1	=>
-							if rx_dv = '1' then
-								AN0				<= '0';
-								AN1				<= '1';
-								AN2				<= '1';
-								AN3				<= '1';
-								num_disp		<= syncd_byte;
+	--		if syncRst = '1' then
+	--			AN0				<= '1';
+	--			AN1				<= '1';
+	--			AN2				<= '1';
+	--			AN3				<= '1';
+	--			num_disp		<= "10101010";
+	--			--rx_dv			<= '0';
+	--			
+	--		else
+	--						if rx_dv = '1' then
+	--							AN0				<= '0';
+	--							AN1				<= '1';
+	--							AN2				<= '1';
+	--							AN3				<= '1';
+	--							num_disp		<= syncd_byte;
 						--	else
 							--	r_state_disp	<= dv0;
 					
-							end if;
+	--						end if;
 				--	end case;
-			end if;
-		end if;
-	end process;
+	--		end if;
+	--	end if;
+	--end process;
+	--
 	tx_uartOut	<= rx_uart_syncd;
 end RTL;	

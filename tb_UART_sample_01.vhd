@@ -1,3 +1,12 @@
+-- tb_uart_sample_01.vhd
+--
+-- Test bench for 4byte UART
+--
+-- Phillip Petty
+-- 
+-- 7/30/2025
+
+
 library ieee;
 use ieee.std_logic_1164.ALL;
 use ieee.numeric_std.all;
@@ -89,7 +98,31 @@ begin
 	wait until rising_edge(r_Clock);				-- wait to clock signals before simulations
     wait until rising_edge(r_Clock);
     r_TX_DV   <= '1';								-- assert Data valid signal to indicate byte is ready to be loaded
+    r_TX_Byte <= X"FF";								-- binary value = (00110111)
+    wait until rising_edge(r_Clock);				-- wait another clock cycle to give time for transmitter to latch byte
+    r_TX_DV   <= '0';								-- reset data valid
+	wait for 100000000 ns;
+		--Tell the UART to send a command. (USE TX)
+	wait until rising_edge(r_Clock);				-- wait to clock signals before simulations
+    wait until rising_edge(r_Clock);
+    r_TX_DV   <= '1';								-- assert Data valid signal to indicate byte is ready to be loaded
     r_TX_Byte <= X"37";								-- binary value = (00110111)
+    wait until rising_edge(r_Clock);				-- wait another clock cycle to give time for transmitter to latch byte
+    r_TX_DV   <= '0';								-- reset data valid
+	wait for 100000000 ns;
+		--Tell the UART to send a command. (USE TX)
+	wait until rising_edge(r_Clock);				-- wait to clock signals before simulations
+    wait until rising_edge(r_Clock);
+    r_TX_DV   <= '1';								-- assert Data valid signal to indicate byte is ready to be loaded
+    r_TX_Byte <= X"FA";								-- binary value = (00110111)
+    wait until rising_edge(r_Clock);				-- wait another clock cycle to give time for transmitter to latch byte
+    r_TX_DV   <= '0';								-- reset data valid
+	wait for 100000000 ns;
+		--Tell the UART to send a command. (USE TX)
+	wait until rising_edge(r_Clock);				-- wait to clock signals before simulations
+    wait until rising_edge(r_Clock);
+    r_TX_DV   <= '1';								-- assert Data valid signal to indicate byte is ready to be loaded
+    r_TX_Byte <= X"AA";								-- binary value = (00110111)
     wait until rising_edge(r_Clock);				-- wait another clock cycle to give time for transmitter to latch byte
     r_TX_DV   <= '0';								-- reset data valid
 	

@@ -1,3 +1,13 @@
+-- rx_uart_sample_01.vhd
+--
+-- recieve for 4byte UART
+--
+-- Phillip Petty
+-- 
+-- 7/30/2025
+
+
+
 library ieee;
 use ieee.std_logic_1164.ALL;
 use ieee.numeric_std.all;
@@ -8,10 +18,10 @@ use ieee.numeric_std.all;
 	-- 1/38400 = 26uS  then 26uS/20nS ~ 1302
 	-- OR
 	--HZ/baud
-		-- 50,000,000/38400 ~ 1302
-		--CORRECTION--Xilinx FPGA Runs at 100,000,000
-		--100,000,000/38400 ~ 2604
-	g_clks_per_bit : integer := 2604
+		-- 100,000,000/38400 ~ 1302
+		--CORRECTION--needed to be 100MHZ (was set to 50MHZ w 1302 baud)
+	--waitclk			: integer :=1000
+	g_clks_per_bit 	: integer := 2604
 );
   port (
     i_clk 			: in std_logic;

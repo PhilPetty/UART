@@ -1,3 +1,13 @@
+-- tx_uart_sample_01.vhd
+--
+-- Transmit 4byte UART
+--
+-- Phillip Petty
+-- 
+-- 7/30/2025
+
+
+
 library ieee;
 use ieee.std_logic_1164.ALL;
 use ieee.numeric_std.all;
@@ -9,8 +19,6 @@ entity tx_uart_sample is
 	-- OR
 	--HZ/baud
 		-- 50,000,000/38400 ~ 1302
-		--CORRECTION--Xilinx FPGA Runs at 100,000,000
-		--100,000,000/38400 ~ 2604
 	g_clks_per_bit : integer := 2604
 	);
 		port(
